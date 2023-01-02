@@ -24,7 +24,7 @@ public class CompositeValidationHandler<T> : IValidator<T> where T : class
     {
       foreach (IValidator<T> validator in _validators)
       {
-        using (_logger.PushProperty("Validator", validator.GetType().GetFriendlyName()))
+        using (_logger.PushProperty("Validator", validator.GetType().ToFriendlyName()))
         {
           if (objectToValidate is IValidatable validatable)
           {

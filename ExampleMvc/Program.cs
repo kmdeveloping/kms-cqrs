@@ -22,7 +22,9 @@ services.AddControllersWithViews();
 services.AddLogging(b => b.AddSerilog());
 services.AddSimpleInjector(container, opt =>
 {
-  opt.AddAspNetCore();
+  opt
+    .AddAspNetCore()
+    .AddControllerActivation();
   opt.AddLogging();
 });
 

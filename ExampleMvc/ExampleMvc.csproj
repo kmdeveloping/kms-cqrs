@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Serilog.Extensions" Version="2.2.2" />
     <PackageReference Include="SimpleInjector" Version="5.4.1" />
-    <PackageReference Include="SimpleInjector.Integration.AspNetCore" Version="5.4.0" />
+    <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc.Core" Version="5.4.0" />
   </ItemGroup>
 
   <ItemGroup>
