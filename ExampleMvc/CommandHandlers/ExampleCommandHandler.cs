@@ -1,9 +1,7 @@
-using cqrsCore;
 using cqrsCore.Command;
-using Examples.CommandContracts;
-using Microsoft.Extensions.Logging;
+using ExampleMvc.CommandContracts;
 
-namespace Examples.CommandHandlers;
+namespace ExampleMvc.CommandHandlers;
 
 public class ExampleCommandHandler : ICommandHandler<ExampleCommand>
 {
@@ -17,5 +15,12 @@ public class ExampleCommandHandler : ICommandHandler<ExampleCommand>
   public async Task HandleAsync(ExampleCommand command, CancellationToken cancellationToken = default)
   {
     _logger.LogInformation("{CommandExampleName} has requested execution at {CommandTimeStamp}", command.ExampleName, command.TimeStamp);
+    
+    _logger.LogInformation("Updated name to email address {NewEmailUserName}", AddEmailToName(command.ExampleName));
+  }
+
+  private string AddEmailToName(string name)
+  {
+    return $"{name}@some-email.com";
   }
 }

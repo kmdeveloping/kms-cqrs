@@ -1,6 +1,8 @@
 using cqrsCore.Command;
 using cqrsCore.Configuration;
+using cqrsCore.Validation;
 using SimpleInjector;
+using SimpleInjector.Lifestyles;
 
 namespace cqrsCore.Extensions;
 
@@ -11,9 +13,33 @@ public static class DependencyInjectionServiceExtension
     if (container is null) throw new ArgumentNullException(nameof(container));
     
     container.RegisterSingleton<ICommandProcessor, DynamicCommandProcessor>();
+    container.RegisterSingleton<IValidationProcessor, DynamicValidationProcessor>();
     
     container.RegisterSingleton<ICqrsManager, CqrsManager>();
     
     return new CqrsConfigurationBuilder(container);
+  }
+  
+  public static bool ScopeExists(this Container container)
+  {
+    var defaultScopedLifestyle = container.Options.DefaultScopedLifestyle;
+    Scope scope = defaultScopedLifestyle.GetCurrentScope(container);
+    var alreadyExists = (scope != null);
+    return alreadyExists;
+  }
+
+  public static Scope CreateLifetimeScope(this Container container)
+  {
+    var defaultScopedLifestyle = container.Options.DefaultScopedLifestyle;
+    Scope scope = defaultScopedLifestyle.GetCurrentScope(container);
+            
+    if (defaultScopedLifestyle is AsyncScopedLifestyle)
+      scope = AsyncScopedLifestyle.BeginScope(container);
+    else if (defaultScopedLifestyle is ThreadScopedLifestyle)
+      scope = ThreadScopedLifestyle.BeginScope(container);
+    else
+      throw new NotImplementedException($"Scoped lifestyle {defaultScopedLifestyle} is not supported");
+        
+    return scope;
   }
 }

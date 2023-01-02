@@ -15,6 +15,8 @@ public class CommandHandlerConfigurationBuilder
     _container = container ?? throw new ArgumentNullException(nameof(container));
     _assemblies = assemblies ?? throw new ArgumentNullException(nameof(assemblies));
     _parentBuilder = parentBuilder ?? throw new ArgumentNullException(nameof(parentBuilder));
+    
+    RegisterHandlers();
   }
 
   private void RegisterHandlers()

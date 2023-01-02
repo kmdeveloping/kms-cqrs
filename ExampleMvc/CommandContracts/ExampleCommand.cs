@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using cqrsCore.Command;
 
-namespace Examples.CommandContracts;
+namespace ExampleMvc.CommandContracts;
 
 public class ExampleCommand : ICommand
 {
