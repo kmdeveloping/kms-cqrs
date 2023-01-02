@@ -1,0 +1,18 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    ":disableMajorUpdates",
+    ":rebaseStalePrs"
+  ],
+  "timezone": "America/Phoenix",
+  "schedule": ["after 9pm on saturday", "before 5am on sunday"],
+  "ignoreTests": true,
+  "packageRules": [
+    {
+      "matchUpdateTypes": [ "minor", "patch", "pin", "digest" ],
+      "automerge": true,
+      "automergeType": "branch"
+    }
+  ]
+}
