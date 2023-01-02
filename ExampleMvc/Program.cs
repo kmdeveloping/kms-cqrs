@@ -2,6 +2,7 @@
 using System.Reflection;
 using cqrsCore.Decorators.Command;
 using cqrsCore.Extensions;
+using cqrsCore.Logging;
 using cqrsCore.Validation;
 using ExampleMvc.CommandHandlers;
 using Serilog;
@@ -31,6 +32,10 @@ container.AddCqrs()
   .And()
   .WithCqrsValidation<DataAnnotationValidator>()
   .Build();
+
+container.Register<cqrsCore.Logging.ILogger, SerilogAdapter>();
+container.Register(typeof(cqrsCore.Logging.ILogger<>), typeof(SerilogAdapter<>));
+container.RegisterInstance<Serilog.ILogger>(Log.Logger);
 
 var app = builder.Build();
 

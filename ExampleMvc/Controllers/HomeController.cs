@@ -27,7 +27,7 @@ public class HomeController : Controller
     return View();
   }
 
-  [HttpGet]
+  [HttpGet("testing")]
   public async Task<IActionResult> TestCqrs()
   {
     await _cqrsManager.ExecuteAsync(new ExampleCommand
