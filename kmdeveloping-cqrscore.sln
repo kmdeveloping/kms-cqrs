@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cqrs-core", "cqrs-core\cqrs-core.csproj", "{6A50380A-FF96-4DDC-9964-D0925BEE3CB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cqrsCore", "cqrsCore\cqrsCore.csproj", "{6A50380A-FF96-4DDC-9964-D0925BEE3CB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
