@@ -18,14 +18,14 @@ public class CqrsConfigurationBuilder
     return new CommandHandlerConfigurationBuilder(this, _container, assemblies);
   }
 
-  public CommandHandlerConfigurationBuilder AddQueryHandlers(IList<Assembly> assemblies)
+  public QueryHandlerConfigurationBuilder AddQueryHandlers(IList<Assembly> assemblies)
   {
-    return new CommandHandlerConfigurationBuilder(this, _container, assemblies);
+    return new QueryHandlerConfigurationBuilder(this, _container, assemblies);
   }
 
-  public CommandHandlerConfigurationBuilder AddEventHandlers(IList<Assembly> assemblies)
+  public EventHandlerConfigurationBuilder AddEventHandlers(IList<Assembly> assemblies)
   {
-    return new CommandHandlerConfigurationBuilder(this, _container, assemblies);
+    return new EventHandlerConfigurationBuilder(this, _container, assemblies);
   }
   
   public ValidatorConfigurationBuilder AddValidators(IList<Assembly> assemblies, IList<string> disabledValidators = null)

@@ -1,5 +1,7 @@
 using System.Reflection;
 using cqrsCore.Decorators.Command;
+using cqrsCore.Decorators.Event;
+using cqrsCore.Decorators.Query;
 using cqrsCore.Extensions;
 using cqrsCore.Logging;
 using cqrsCore.Validation;
@@ -31,10 +33,29 @@ public static class BootstrapApi
       opt.AddAspNetCore().AddControllerActivation();
       opt.AddLogging();
     });
+
+    var assemblies = GetAssemblies();
     
     container.AddCqrs()
-      .AddCommandHandlers(GetAssemblies())
-      .DecorateWith(typeof(AsyncCommandHandlerDecorator<>))
+      .AddCommandHandlers(assemblies)
+        .DecorateWith(typeof(AsyncCommandHandlerDecorator<>))
+        .DecorateWith(typeof(RetryCommandHandlerDecorator<>))
+        .DecorateWith(typeof(ValidatingCommandHandlerDecorator<>))
+        .DecorateWith(typeof(LoggingCommandHandlerDecorator<>))
+        .DecorateWith(typeof(LifetimeScopeCommandHandlerProxy<>))
+      .And()
+      .AddQueryHandlers(assemblies)
+        .DecorateWith(typeof(TimeoutQueryHandlerDecorator<,>))
+        .DecorateWith(typeof(RetryingQueryHandlerDecorator<,>))
+        .DecorateWith(typeof(ValidatingQueryHandlerDecorator<,>))
+        .DecorateWith(typeof(LoggingQueryHandlerDecorator<,>))
+        .DecorateWith(typeof(LifetimeScopeQueryHandlerProxy<,>))
+      .And()
+      .AddEventHandlers(assemblies)
+      .UseCompositeHandler()
+      .DecorateWith(typeof(AsyncEventHandlerDecorator<>))
+      .DecorateWith(typeof(LoggingEventHandlerDecorator<>))
+      .DecorateWith(typeof(LifetimeScopeEventHandlerProxy<>))
       .And()
       .WithCqrsValidation<DataAnnotationValidator>()
       .Build();
