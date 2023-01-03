@@ -4,6 +4,8 @@ stages:
   - deploy
 
 deploy:
+  tags:
+    - kmdev
   stage: deploy
   script:
     - dotnet pack cqrsCore/cqrsCore.csproj -c Release
