@@ -1,6 +1,9 @@
 namespace cqrsCore.Query;
 
-public interface IQuery
+/// <summary>
+/// Represents a query.
+/// </summary>
+public interface IQuery<TResult>
 {
   
 }

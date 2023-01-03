@@ -1,5 +1,7 @@
 using cqrsCore.Command;
 using cqrsCore.Configuration;
+using cqrsCore.Events;
+using cqrsCore.Query;
 using cqrsCore.Validation;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
@@ -12,7 +14,9 @@ public static class DependencyInjectionServiceExtension
   {
     if (container is null) throw new ArgumentNullException(nameof(container));
     
+    container.RegisterSingleton<IQueryProcessor, DynamicQueryProcessor>();
     container.RegisterSingleton<ICommandProcessor, DynamicCommandProcessor>();
+    container.RegisterSingleton<IEventProcessor, DynamicEventProcessor>();
     container.RegisterSingleton<IValidationProcessor, DynamicValidationProcessor>();
     
     container.RegisterSingleton<ICqrsManager, CqrsManager>();
