@@ -15,6 +15,7 @@ var services = builder.Services;
 Log.Logger = new LoggerConfiguration()
   .MinimumLevel.Verbose()
   .Enrich.FromLogContext()
+  .WriteTo.Console()
   .CreateLogger();
 
 // Add services to the container.
@@ -28,16 +29,11 @@ services.AddSimpleInjector(container, opt =>
   opt.AddLogging();
 });
 
-container.AddCqrs()
-  .AddCommandHandlers(GetCommandAssemblies())
-  .DecorateWith(typeof(AsyncCommandHandlerDecorator<>))
-  .And()
-  .WithCqrsValidation<DataAnnotationValidator>()
-  .Build();
-
-container.Register<cqrsCore.Logging.ILogger, SerilogAdapter>();
-container.Register(typeof(cqrsCore.Logging.ILogger<>), typeof(SerilogAdapter<>));
-container.RegisterInstance<Serilog.ILogger>(Log.Logger);
+container
+  .AddCqrs()
+  .AddDefaultCqrs(opt => opt.Assemblies = GetCommandAssemblies())
+  .Build()
+  .AddCqrsCoreLogging();
 
 var app = builder.Build();
 

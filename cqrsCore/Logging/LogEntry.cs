@@ -7,14 +7,13 @@ public class LogEntry
   public object[] PropertyValues;
   public readonly Exception Exception;
 
-  public LogEntry(LoggingEventLevel severity, string messageTemplate, Exception exception = null,
-    params object[] propertyValues)
+  public LogEntry(LoggingEventLevel severity, string messageTemplate, Exception exception = null, params object[] propertyValues)
   {
     if(string.IsNullOrEmpty(messageTemplate)) throw new ArgumentNullException(nameof(messageTemplate));
             
-    this.Severity = severity;
-    this.MessageTemplate = messageTemplate;
-    this.Exception = exception;
-    this.PropertyValues = propertyValues;
+    Severity = severity;
+    MessageTemplate = messageTemplate;
+    Exception = exception;
+    PropertyValues = propertyValues;
   }
 }

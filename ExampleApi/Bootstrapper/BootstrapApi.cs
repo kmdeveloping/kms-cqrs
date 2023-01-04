@@ -30,39 +30,19 @@ public static class BootstrapApi
     services.AddLogging(b => b.AddSerilog());
     services.AddSimpleInjector(container, opt =>
     {
-      opt.AddAspNetCore().AddControllerActivation();
+      opt
+        .AddAspNetCore()
+        .AddControllerActivation();
       opt.AddLogging();
     });
 
-    var assemblies = GetAssemblies();
-    
-    container.AddCqrs()
-      .AddCommandHandlers(assemblies)
-        .DecorateWith(typeof(AsyncCommandHandlerDecorator<>))
-        .DecorateWith(typeof(RetryCommandHandlerDecorator<>))
-        .DecorateWith(typeof(ValidatingCommandHandlerDecorator<>))
-        .DecorateWith(typeof(LoggingCommandHandlerDecorator<>))
-        .DecorateWith(typeof(LifetimeScopeCommandHandlerProxy<>))
-      .And()
-      .AddQueryHandlers(assemblies)
-        .DecorateWith(typeof(TimeoutQueryHandlerDecorator<,>))
-        .DecorateWith(typeof(RetryingQueryHandlerDecorator<,>))
-        .DecorateWith(typeof(ValidatingQueryHandlerDecorator<,>))
-        .DecorateWith(typeof(LoggingQueryHandlerDecorator<,>))
-        .DecorateWith(typeof(LifetimeScopeQueryHandlerProxy<,>))
-      .And()
-      .AddEventHandlers(assemblies)
-      .UseCompositeHandler()
-      .DecorateWith(typeof(AsyncEventHandlerDecorator<>))
-      .DecorateWith(typeof(LoggingEventHandlerDecorator<>))
-      .DecorateWith(typeof(LifetimeScopeEventHandlerProxy<>))
-      .And()
-      .WithCqrsValidation<DataAnnotationValidator>()
-      .Build();
+    List<Assembly> assemblies = GetAssemblies();
 
-    container.Register<cqrsCore.Logging.ILogger, SerilogAdapter>();
-    container.Register(typeof(cqrsCore.Logging.ILogger<>), typeof(SerilogAdapter<>));
-    container.RegisterInstance<Serilog.ILogger>(Log.Logger);
+    container
+      .AddCqrs()
+      .AddDefaultCqrs(opt => opt.Assemblies = assemblies)
+      .Build()
+      .AddCqrsCoreLogging();
 
     var app = builder.Build();
     
