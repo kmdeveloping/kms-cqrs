@@ -1,9 +1,6 @@
 
 using System.Reflection;
-using cqrsCore.Decorators.Command;
 using cqrsCore.Extensions;
-using cqrsCore.Logging;
-using cqrsCore.Validation;
 using ExampleMvc.CommandHandlers;
 using Serilog;
 using SimpleInjector;
@@ -31,8 +28,7 @@ services.AddSimpleInjector(container, opt =>
 
 container
   .AddCqrs()
-  .AddDefaultCqrs(opt => opt.Assemblies = GetCommandAssemblies())
-  .Build()
+  .AddDefaultConfigurations(opt => opt.Assemblies = GetCommandAssemblies())
   .AddCqrsCoreLogging();
 
 var app = builder.Build();

@@ -1,10 +1,5 @@
 using System.Reflection;
-using cqrsCore.Decorators.Command;
-using cqrsCore.Decorators.Event;
-using cqrsCore.Decorators.Query;
 using cqrsCore.Extensions;
-using cqrsCore.Logging;
-using cqrsCore.Validation;
 using ExampleApi.CommandHandlers;
 using Serilog;
 using SimpleInjector;
@@ -40,8 +35,7 @@ public static class BootstrapApi
 
     container
       .AddCqrs()
-      .AddDefaultCqrs(opt => opt.Assemblies = assemblies)
-      .Build()
+      .AddDefaultConfigurations(opt => opt.Assemblies = assemblies)
       .AddCqrsCoreLogging();
 
     var app = builder.Build();

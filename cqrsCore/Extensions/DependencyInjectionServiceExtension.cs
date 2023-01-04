@@ -30,7 +30,7 @@ public static class DependencyInjectionServiceExtension
     return new CqrsConfigurationBuilder(container);
   }
 
-  public static CqrsConfigurationBuilder AddDefaultCqrs(this CqrsConfigurationBuilder builder, Action<ExtensionOptions> options)
+  public static Container AddDefaultConfigurations(this CqrsConfigurationBuilder builder, Action<ExtensionOptions> options)
   {
     if (builder is null) throw new ArgumentNullException(nameof(builder));
     if (options is null) throw new ArgumentNullException(nameof(options));
@@ -62,7 +62,7 @@ public static class DependencyInjectionServiceExtension
       .And()
       .WithCqrsValidation<DataAnnotationValidator>();
 
-    return builder;
+    return builder.Build();
   }
 
   public static Container AddCqrsCoreLogging(this Container container)
