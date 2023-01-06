@@ -1,9 +1,9 @@
-using System.Reflection;
 using cqrsCore.Command;
 using cqrsCore.Configuration;
 using cqrsCore.Decorators.Command;
 using cqrsCore.Decorators.Event;
 using cqrsCore.Decorators.Query;
+using cqrsCore.Decorators.Validation;
 using cqrsCore.Events;
 using cqrsCore.Logging;
 using cqrsCore.Query;
@@ -38,24 +38,22 @@ public static class DependencyInjectionServiceExtension
     ExtensionOptions extensionOptions = new ExtensionOptions();
     options.Invoke(extensionOptions);
 
-    builder.AddCommandHandlers(extensionOptions.Assemblies)
-      .DecorateWith(typeof(AsyncCommandHandlerDecorator<>))
-      .DecorateWith(typeof(TimeoutCommandHandlerDecorator<>))
-      .DecorateWith(typeof(RetryCommandHandlerDecorator<>))
+    builder
+      .AddCommandHandlers(extensionOptions.Assemblies)
       .DecorateWith(typeof(ValidatingCommandHandlerDecorator<>))
       .DecorateWith(typeof(LoggingCommandHandlerDecorator<>))
       .DecorateWith(typeof(LifetimeScopeCommandHandlerProxy<>))
       .And()
       .AddQueryHandlers(extensionOptions.Assemblies)
-      .DecorateWith(typeof(TimeoutQueryHandlerDecorator<,>))
-      .DecorateWith(typeof(RetryingQueryHandlerDecorator<,>))
       .DecorateWith(typeof(ValidatingQueryHandlerDecorator<,>))
       .DecorateWith(typeof(LoggingQueryHandlerDecorator<,>))
       .DecorateWith(typeof(LifetimeScopeQueryHandlerProxy<,>))
       .And()
+      .AddValidators(extensionOptions.Assemblies)
+      .DecorateWith(typeof(LoggingValidatorDecorator<>))
+      .And()
       .AddEventHandlers(extensionOptions.Assemblies)
       .UseCompositeHandler()
-      .DecorateWith(typeof(AsyncEventHandlerDecorator<>))
       .DecorateWith(typeof(ValidatingEventHandlerDecorator<>))
       .DecorateWith(typeof(LoggingEventHandlerDecorator<>))
       .DecorateWith(typeof(LifetimeScopeEventHandlerProxy<>))

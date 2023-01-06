@@ -5,5 +5,5 @@ namespace cqrsCore.Query;
 /// </summary>
 public interface IQuery<TResult>
 {
-  
+  TResult Result { get; set; }
 }

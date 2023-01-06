@@ -6,4 +6,5 @@ public class PagedQuery<TQuery, TResult> : IQuery<Paged<TResult>> where TQuery :
 {
   public TQuery Query { get; set; }
   public PageInfo PageInfo { get; set; }
+  public Paged<TResult> Result { get; set; }
 }

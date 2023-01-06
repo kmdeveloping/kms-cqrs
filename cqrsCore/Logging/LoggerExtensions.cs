@@ -34,7 +34,7 @@ public static class LoggerExtensions
 
         public static void Warning(this ILogger logger, string messageTemplate, params object[] propertyValues)
         {
-            logger.Warning((Exception) null, messageTemplate, propertyValues);
+            logger.Warning(null as Exception, messageTemplate, propertyValues);
         }
 
         public static void Warning(this ILogger logger, Exception exception, string messageTemplate, params object[] propertyValues)
@@ -44,7 +44,7 @@ public static class LoggerExtensions
 
         public static void Error(this ILogger logger, string messageTemplate, params object[] propertyValues)
         {
-            logger.Error((Exception) null, messageTemplate, propertyValues);
+            logger.Error(null as Exception, messageTemplate, propertyValues);
         }
 
         public static void Error(this ILogger logger, Exception exception)
@@ -59,7 +59,7 @@ public static class LoggerExtensions
         
         public static void Fatal(this ILogger logger, string messageTemplate, params object[] propertyValues)
         {
-            logger.Fatal((Exception) null, messageTemplate, propertyValues);
+            logger.Fatal(null as Exception, messageTemplate, propertyValues);
         }
 
         public static void Fatal(this ILogger logger, Exception exception)
