@@ -3,6 +3,7 @@ using cqrsCore;
 using ExampleMvc.CommandContracts;
 using Microsoft.AspNetCore.Mvc;
 using ExampleMvc.Models;
+using ExampleMvc.QueryContracts;
 
 namespace ExampleMvc.Controllers;
 
@@ -26,19 +27,22 @@ public class HomeController : Controller
   {
     return View();
   }
-
-  [HttpGet("testing")]
-  public async Task<IActionResult> TestCqrs()
+  
+  public async Task<IActionResult> Testing()
   {
-    await _cqrsManager.ExecuteAsync(new ExampleCommand
+    ExampleQuery query = new ExampleQuery
     {
-      ExampleName = "MRBeast",
-      TimeStamp = DateTime.Now,
-      ExecuteAsNoOp = false,
-      ContextData = new Dictionary<string, object>()
-    }, CancellationToken.None);
+      Name = "johnny"
+    };
 
-    return Ok();
+    var task = _cqrsManager.ExecuteAsync(query, CancellationToken.None);
+
+    TestingViewModel v = new TestingViewModel
+    {
+      EmailAddress = task.Result
+    };
+    
+    return View(v);
   }
 
   [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

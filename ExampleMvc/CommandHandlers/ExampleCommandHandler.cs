@@ -12,11 +12,12 @@ public class ExampleCommandHandler : ICommandHandler<ExampleCommand>
     _logger = logger ?? throw new ArgumentNullException(nameof(logger));
   }
   
-  public async Task HandleAsync(ExampleCommand command, CancellationToken cancellationToken = default)
+  public Task HandleAsync(ExampleCommand command, CancellationToken cancellationToken = default)
   {
     _logger.LogInformation("{CommandExampleName} has requested execution at {CommandTimeStamp}", command.ExampleName, command.TimeStamp);
     
     _logger.LogInformation("Updated name to email address {NewEmailUserName}", AddEmailToName(command.ExampleName));
+    return Task.CompletedTask;
   }
 
   private string AddEmailToName(string name)
