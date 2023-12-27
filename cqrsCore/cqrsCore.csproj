@@ -5,7 +5,7 @@
     <PackageId>Kmd.CqrsCore</PackageId>
     <Version>1.0.4</Version>
     <Authors>Tim Hayes, Kevin Mollencopf</Authors>
-    <RepositoryUrl>https://gitlab.kmserver.co/kmdeveloping/cqrs-core</RepositoryUrl>
+    <RepositoryUrl>https://github.com/kmdeveloping/kms-cqrs</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Company>KmDeveloping</Company>
     <ImplicitUsings>enable</ImplicitUsings>
