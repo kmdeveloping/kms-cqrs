@@ -18,22 +18,31 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Setup .NET environment
-        uses: actions/setup-dotnet@v3
+      
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3.0.3
         with:
           dotnet-version: '6.0.*'
-          source-url: https://nuget.pkg.github.com/kmdeveloping/index.json
+          # Authenticates packages to push to GPR
+          source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
-          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-      - name: Build project
-        run: dotnet build cqrsCore -c Release
-
-      - name: Generate a NuGet package
-        run: dotnet pack --no-build -c Release -o .
-
-      - name: Push to GitHub package registry
-        run: |
-          dotnet nuget add source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --name github --username ${{ github.repository_owner }} --password ${{ github.token }} --store-password-in-clear-text
-          dotnet nuget push **/*.nupkg --source github
+          NUGET_AUTH_TOKEN: '%NUGET_AUTH_TOKEN%'
+    
+      - name: Install dependencies
+        run: dotnet restore
+        env:
+          NUGET_AUTH_TOKEN: ${{ github.token }}
+        
+      - name: Build
+        run: dotnet build cqrsCore -c Release --no-restore
+      
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+      
+      - name: Pack
+        run: dotnet pack --no-build -c Release
+      
+      - name: PushGithub
+        run: dotnet nuget push **/*.nupkg --no-symbols --skip-duplicate
+        env:
+          NUGET_AUTH_TOKEN: ${{ github.token }}
