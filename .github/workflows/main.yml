@@ -1,19 +1,36 @@
-name: Publish CQRS Package
-runs-on: ubuntu-latest
-permissions:
-  contents: read
-  packages: write # permission for the github token
-steps:
-  - uses: actions/checkout@v3
-  - uses: actions/setup-dotnet@v3
-    with:
-      dotnet-version: '6.0.x' # No change it
-      source-url: https://nuget.pkg.github.com/kmdeveloping/index.json
-    env:
-      NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-  - name: Build project
-    run: dotnet build --configuration Release
-  - name: Create the package
-    run: dotnet pack --configuration Release
-  - name: Publish the package to GPR
-    run: dotnet nuget push bin/Release/*.nupkg
+name: Build and publish package
+
+# Controls when the action will run. Triggers the workflow on push or pull request 
+# events but only for the master branch
+on:
+  push:
+    tags: [ 'v*.*.*' ]
+  pull_request:
+    branches: [ 'develop' ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET environment
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.*'
+          source-url: https://nuget.pkg.github.com/kmdeveloping/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Build project
+        run: dotnet build -c Release
+
+      - name: Generate a NuGet package
+        run: dotnet pack --no-build -c Release -o .
+
+      - name: Push to GitHub package registry
+        run: dotnet nuget push *.nupkg
