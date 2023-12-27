@@ -5,6 +5,7 @@ name: Build and publish package
 on:
   push:
     tags: [ 'v*.*.*' ]
+    branches: [ 'master' ]
   pull_request:
     branches: [ 'develop' ]
 
