@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: dotnet restore cqrsCore
         env:
-          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUGET_AUTH_TOKEN: ${{ github.token }}
         
       - name: Build
         run: dotnet build cqrsCore -c Release --no-restore
