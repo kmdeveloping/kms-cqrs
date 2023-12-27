@@ -30,7 +30,7 @@ jobs:
           NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore cqrsCore
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
