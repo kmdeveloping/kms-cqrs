@@ -1,10 +1,10 @@
-namespace CqrsFramework.Validation;
+﻿namespace CqrsFramework.Validation;
 
 public sealed class ValidationResult
 {
     private bool _isValid = false;
     private bool _isDirty = true;
-
+        
     public bool IsValid
     {
         get
@@ -51,7 +51,7 @@ public sealed class ValidationResult
             .Distinct()
             .ToList();
         string joinedMessages = String.Join(separator: "\r\n", values: messages);
-
+            
         return $"Is valid: {IsValid}, {joinedMessages}";
     }
 
@@ -69,7 +69,7 @@ public sealed class ValidationResult
                 .Distinct()
                 .Aggregate((c, n) => $"{c}, {n}");
         }
-
+            
         return errorMessage;
     }
 }

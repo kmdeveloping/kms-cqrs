@@ -1,15 +1,15 @@
-namespace CqrsFramework.Command;
+﻿namespace CqrsFramework.Command;
 
 /// <summary>
 /// Represents a command.
 /// </summary>
 public interface ICommand
 {
-  /// <summary>
-  /// If set to true, command will execute as no-op and will not mutate state in the system.
-  /// Handling of this is up to the command handler implementation to ensure state is not mutated.
-  /// </summary>
-  bool ExecuteAsNoOp { get; set; }
+    /// <summary>
+    /// If set to true, command will execute as no-op and will not mutate state in the system.
+    /// Handling of this is up to the command handler implementation to ensure state is not mutated.
+    /// </summary>
+    bool ExecuteAsNoOp { get; set; }
 }
 
 /// <summary>
@@ -18,8 +18,8 @@ public interface ICommand
 /// <typeparam name="TResult"></typeparam>
 public interface ICommandWithResult<TResult> : ICommand
 {
-  /// <summary>
-  /// The result of the command after execution.
-  /// </summary>
-  TResult Result { get; set; }
+    /// <summary>
+    /// The result of the command after execution.
+    /// </summary>
+    TResult Result { get; set; }
 }

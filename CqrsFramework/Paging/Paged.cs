@@ -1,5 +1,8 @@
+using System.Diagnostics;
+
 namespace CqrsFramework.Paging;
 
+[DebuggerStepThrough]
 public class Paged<T>
 {
   /// <summary> Contains information about the requested page. </summary>

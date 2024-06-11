@@ -1,23 +1,24 @@
+﻿using System.Diagnostics;
 using System.Transactions;
 using CqrsFramework.Command;
 
-namespace CqrsFramework.Decorators.Command;
-
-public class TransactionCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
+namespace CqrsFramework.Decorators.Command
+{
+    [DebuggerStepThrough]
+    public class TransactionCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
         where TCommand: ICommand
     {
         private readonly ICommandHandler<TCommand> _decoratedHandler;
         private readonly bool _transactionsEnabled;
         private readonly int _transactionTimeoutMinutes;
-        private readonly ICommandTransactionSettings _commandTransactionSettings;
 
         public TransactionCommandHandlerDecorator(ICommandHandler<TCommand> decoratedHandler, ICommandTransactionSettings commandTransactionSettings)
         {
             _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
-            _commandTransactionSettings = commandTransactionSettings ?? throw new ArgumentNullException(nameof(commandTransactionSettings));
+            if (commandTransactionSettings == null) throw new ArgumentNullException(nameof(commandTransactionSettings));
             
-            _transactionsEnabled = _commandTransactionSettings.TransactionsEnabled;
-            _transactionTimeoutMinutes = _commandTransactionSettings.TransactionTimeoutMinutes;
+            _transactionsEnabled = commandTransactionSettings.TransactionsEnabled;
+            _transactionTimeoutMinutes = commandTransactionSettings.TransactionTimeoutMinutes;
         }
 
         public async Task HandleAsync(TCommand command, CancellationToken cancellationToken)
@@ -60,3 +61,4 @@ public class TransactionCommandHandlerDecorator<TCommand> : ICommandHandler<TCom
             }
         }
     }
+}

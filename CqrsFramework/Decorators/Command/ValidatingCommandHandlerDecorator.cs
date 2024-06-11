@@ -1,25 +1,27 @@
+﻿using System.Diagnostics;
 using CqrsFramework.Command;
 using CqrsFramework.Validation;
 
 namespace CqrsFramework.Decorators.Command;
 
+[DebuggerStepThrough]
 public class ValidatingCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
-  where TCommand: ICommand
+    where TCommand: ICommand
 {
-  private readonly IValidator _validator;
-  private readonly ICommandHandler<TCommand> _decoratedHandler;
+    private readonly IValidator _validator;
+    private readonly ICommandHandler<TCommand> _decoratedHandler;
 
-  public ValidatingCommandHandlerDecorator(IValidator validator, ICommandHandler<TCommand> decoratedHandler)
-  {
-    _validator = validator ?? throw new ArgumentNullException(nameof(validator));
-    _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
-  }
+    public ValidatingCommandHandlerDecorator(IValidator validator, ICommandHandler<TCommand> decoratedHandler)
+    {
+        _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+        _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
+    }
 
-  public async Task HandleAsync(TCommand command, CancellationToken cancellationToken)
-  {
-    if (command == null) throw new ArgumentNullException(nameof(command));
+    public async Task HandleAsync(TCommand command, CancellationToken cancellationToken)
+    {
+        if (command == null) throw new ArgumentNullException(nameof(command));
 
-    await _validator.ValidateAsync(command, cancellationToken);
-    await _decoratedHandler.HandleAsync(command, cancellationToken);
-  }
+        await _validator.ValidateAsync(command, cancellationToken);
+        await _decoratedHandler.HandleAsync(command, cancellationToken);
+    }
 }

@@ -1,5 +1,8 @@
+using System.Diagnostics;
+
 namespace CqrsFramework.Paging;
 
+[DebuggerStepThrough]
 public class PageInfo
 {
   /// <summary> Returns a PageInfo for a single page request. </summary>

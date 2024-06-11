@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using System.Security.Principal;
-using CqrsFramework.Events;
+using CqrsFramework.Event;
 using CqrsFramework.Serialization;
 using Newtonsoft.Json;
 
