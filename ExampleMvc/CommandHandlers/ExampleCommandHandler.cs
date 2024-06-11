@@ -1,4 +1,4 @@
-using cqrsCore.Command;
+using CqrsFramework.Command;
 using ExampleMvc.CommandContracts;
 
 namespace ExampleMvc.CommandHandlers;

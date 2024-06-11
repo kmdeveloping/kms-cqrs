@@ -1,14 +1,14 @@
-using cqrsCore.Command;
-using cqrsCore.Logging;
+using CqrsFramework.Command;
+using CqrsFramework.Logging;
 using ExampleApi.Commands;
 
 namespace ExampleApi.CommandHandlers;
 
 public class ApiExampleCommandHandler : ICommandHandler<ApiExampleCommand>
 {
-  private readonly cqrsCore.Logging.ILogger<ApiExampleCommandHandler> _logger;
+  private readonly CqrsFramework.Logging.ILogger<ApiExampleCommandHandler> _logger;
 
-  public ApiExampleCommandHandler(cqrsCore.Logging.ILogger<ApiExampleCommandHandler> logger)
+  public ApiExampleCommandHandler(CqrsFramework.Logging.ILogger<ApiExampleCommandHandler> logger)
   {
     _logger = logger ?? throw new ArgumentNullException(nameof(logger));
   }

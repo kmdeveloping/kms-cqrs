@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cqrsCore", "cqrsCore\cqrsCore.csproj", "{6A50380A-FF96-4DDC-9964-D0925BEE3CB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CqrsFramework", "CqrsFramework\CqrsFramework.csproj", "{6A50380A-FF96-4DDC-9964-D0925BEE3CB6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleMvc", "ExampleMvc\ExampleMvc.csproj", "{944BDE7A-3098-499A-903E-9D29326BE9FB}"
 EndProject
