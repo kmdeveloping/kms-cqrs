@@ -1,5 +1,5 @@
 using System.Reflection;
-using cqrsCore.Extensions;
+using CqrsFramework.Extensions;
 using ExampleApi.CommandHandlers;
 using Serilog;
 using SimpleInjector;

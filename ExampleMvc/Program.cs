@@ -1,6 +1,6 @@
 
 using System.Reflection;
-using cqrsCore.Extensions;
+using CqrsFramework.Extensions;
 using ExampleMvc.CommandHandlers;
 using Serilog;
 using SimpleInjector;

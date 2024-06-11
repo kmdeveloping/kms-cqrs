@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using cqrsCore.Command;
+using CqrsFramework.Command;
 
 namespace ExampleApi.Commands;
 

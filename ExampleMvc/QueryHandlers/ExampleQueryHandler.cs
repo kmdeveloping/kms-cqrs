@@ -1,4 +1,4 @@
-using cqrsCore.Query;
+using CqrsFramework.Query;
 using ExampleMvc.QueryContracts;
 
 namespace ExampleMvc.QueryHandlers;

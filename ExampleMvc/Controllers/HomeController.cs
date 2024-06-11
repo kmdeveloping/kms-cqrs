@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using cqrsCore;
+using CqrsFramework;
 using ExampleMvc.CommandContracts;
 using Microsoft.AspNetCore.Mvc;
 using ExampleMvc.Models;

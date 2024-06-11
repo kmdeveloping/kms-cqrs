@@ -1,4 +1,4 @@
-using cqrsCore;
+using CqrsFramework;
 using ExampleApi.Commands;
 using ExampleApi.Models;
 using Microsoft.AspNetCore.Mvc;

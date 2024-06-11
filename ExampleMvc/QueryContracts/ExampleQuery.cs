@@ -1,4 +1,4 @@
-using cqrsCore.Query;
+using CqrsFramework.Query;
 
 namespace ExampleMvc.QueryContracts;
 

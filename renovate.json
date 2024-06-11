@@ -5,7 +5,7 @@
     ":disableMajorUpdates",
     ":rebaseStalePrs"
   ],
-  "timezone": "America/Phoenix",
+  "timezone": "America/New_York",
   "schedule": ["after 9pm on saturday", "before 5am on sunday"],
   "ignoreTests": true,
   "packageRules": [
