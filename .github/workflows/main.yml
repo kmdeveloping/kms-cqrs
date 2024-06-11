@@ -26,12 +26,12 @@ jobs:
           NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
       - name: Install dependencies
-        run: dotnet restore cqrsCore
+        run: dotnet restore CqrsFramework
         env:
           NUGET_AUTH_TOKEN: ${{ github.token }}
         
       - name: Build
-        run: dotnet build cqrsCore -c Release --no-restore
+        run: dotnet build CqrsFramework -c Release --no-restore
       
       - name: Test
         run: dotnet test --no-restore --verbosity normal
