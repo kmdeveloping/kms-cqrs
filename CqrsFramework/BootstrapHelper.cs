@@ -48,13 +48,13 @@ public static class BootstrapHelper
             let assembly = Assembly.Load(AssemblyName.GetAssemblyName(file.FullName))
             where assembly.GetName().Name.EndsWith("Handlers")
             select assembly;
-
-        var regex = new Regex(@"\b.*(H|h)andler(s)\b", RegexOptions.IgnoreCase);
         
         var handlerAssemblies = (
                 from assembly in dllAssemblies
                 from type in assembly.GetExportedTypes()
-                where regex.IsMatch(type.Name)
+                where
+                    type.Name.EndsWith("Handler") || 
+                    type.Name.EndsWith("Handlers")
                 from intf in type.GetInterfaces()
                 where intf.IsGenericType
                 let intfType = intf.GetGenericTypeDefinition()
