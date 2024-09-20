@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <PackageId>KmsCqrsFramework</PackageId>
-    <Version>1.0.8</Version>
+    <Version>1.0.7</Version>
     <Authors>Tim Hayes, Kevin Mollencopf</Authors>
     <RepositoryUrl>https://github.com/kmdeveloping/kms-cqrs</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
