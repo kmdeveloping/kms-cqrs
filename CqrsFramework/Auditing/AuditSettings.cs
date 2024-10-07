@@ -6,3 +6,10 @@ public interface IAuditSettings
     bool EventAuditingEnabled { get; set; }
     Action<IAuditHistory> SaveAuditHistoryRecordAction { get; set; }
 }
+
+public class AuditSettings : IAuditSettings
+{
+    public bool CommandAuditingEnabled { get; set; }
+    public bool EventAuditingEnabled { get; set; }
+    public Action<IAuditHistory> SaveAuditHistoryRecordAction { get; set; }
+}

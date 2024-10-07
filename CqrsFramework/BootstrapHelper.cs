@@ -39,21 +39,22 @@ public static class BootstrapHelper
     /// <returns>List of assemblies found that implement one of the handler interfaces.</returns>
     public static List<Assembly> DiscoverHandlerAssemblies(string? searchDirectoryPath = null)
     {
-        if (string.IsNullOrEmpty(searchDirectoryPath)) searchDirectoryPath = AppContext.BaseDirectory;
+        if (string.IsNullOrEmpty(searchDirectoryPath))
+            searchDirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         var dllAssemblies =
-            from file in new DirectoryInfo(searchDirectoryPath!).GetFiles()
+            from file in new DirectoryInfo(searchDirectoryPath).GetFiles()
             where file.Extension.ToLower() == ".dll"
             where file.Name.Contains("handlers", StringComparison.OrdinalIgnoreCase)
             let assembly = Assembly.Load(AssemblyName.GetAssemblyName(file.FullName))
             where assembly.GetName().Name.EndsWith("Handlers")
             select assembly;
-        
+
         var handlerAssemblies = (
                 from assembly in dllAssemblies
                 from type in assembly.GetExportedTypes()
                 where
-                    type.Name.EndsWith("Handler") || 
+                    type.Name.EndsWith("Handler") ||
                     type.Name.EndsWith("Handlers")
                 from intf in type.GetInterfaces()
                 where intf.IsGenericType
