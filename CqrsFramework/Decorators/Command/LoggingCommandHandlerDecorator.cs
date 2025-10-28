@@ -7,21 +7,11 @@ using SimpleInjector;
 namespace CqrsFramework.Decorators.Command;
 
 [DebuggerStepThrough]
-public class LoggingCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
-    where TCommand: ICommand
+public class LoggingCommandHandlerDecorator<TCommand>(ICommandHandler<TCommand> decoratedService, ILogger logger, DecoratorContext decoratorContext) : ICommandHandler<TCommand> where TCommand: ICommand
 {
-    private readonly ICommandHandler<TCommand> _decoratedService;
-    private readonly ILogger _logger;
-    private readonly string _handlerName;
-        
-    public LoggingCommandHandlerDecorator(ICommandHandler<TCommand> decoratedService, ILogger logger, DecoratorContext decoratorContext)
-    {
-        _decoratedService = decoratedService ?? throw new ArgumentNullException(nameof(decoratedService));
-        if(logger == null) throw new ArgumentNullException(nameof(logger));
-        _logger = logger.ForContext(typeof(LoggingCommandHandlerDecorator<TCommand>));
-        if (decoratorContext == null) throw new ArgumentNullException(nameof(decoratorContext));
-        _handlerName = decoratorContext.ImplementationType.GetFriendlyName();
-    }
+    private readonly ICommandHandler<TCommand> _decoratedService = decoratedService ?? throw new ArgumentNullException(nameof(decoratedService));
+    private readonly ILogger _logger = logger.ForContext(typeof(LoggingCommandHandlerDecorator<TCommand>)) ?? throw new ArgumentNullException(nameof(logger));
+    private readonly string _handlerName = decoratorContext.ImplementationType.GetFriendlyName() ?? throw new ArgumentNullException(nameof(decoratorContext));
 
     public async Task HandleAsync(TCommand command, CancellationToken cancellationToken)
     {
@@ -31,15 +21,8 @@ public class LoggingCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand
 
         using (_logger.PushProperty("Command", command, true))
         {
-            if (command.ExecuteAsNoOp)
-            {    _logger.Debug("Handling NO-OP command {CommandName} using handler {CommandHandler}", 
+            _logger.Debug(command.ExecuteAsNoOp ? "Handling NO-OP command {CommandName} using handler {CommandHandler}" : "Handling command {CommandName} using handler {CommandHandler}",
                 commandName, _handlerName);
-            }
-            else
-            {
-                _logger.Debug("Handling command {CommandName} using handler {CommandHandler}",
-                    commandName, _handlerName);
-            }
 
             var sw = Stopwatch.StartNew();
             try

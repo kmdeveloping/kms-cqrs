@@ -12,23 +12,16 @@ namespace CqrsFramework.Decorators.Command;
 /// </summary>
 /// <typeparam name="TCommand"></typeparam>
 [DebuggerStepThrough]
-public class TimeoutCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
-    where TCommand: ICommand, ITimeout
+public class TimeoutCommandHandlerDecorator<TCommand>(ICommandHandler<TCommand> decoratedHandler, ILogger logger) : ICommandHandler<TCommand>
+    where TCommand : ICommand, ITimeout
 {
-    private readonly ICommandHandler<TCommand> _decoratedHandler;
-    private readonly ILogger _logger;
-
-    public TimeoutCommandHandlerDecorator(ICommandHandler<TCommand> decoratedHandler, ILogger logger)
-    {
-        _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
-        if(logger == null) throw new ArgumentNullException(nameof(logger));
-        _logger = logger.ForContext(typeof(TimeoutCommandHandlerDecorator<TCommand>));
-    }
+    private readonly ICommandHandler<TCommand> _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
+    private readonly ILogger _logger = logger?.ForContext(typeof(TimeoutCommandHandlerDecorator<TCommand>)) ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task HandleAsync(TCommand command, CancellationToken cancellationToken)
     {
         if (command == null) throw new ArgumentNullException(nameof(command));
-        string commandName = command.GetType().GetFriendlyName();
+        var commandName = command.GetType().GetFriendlyName();
             
         var timeout = command as ITimeout;
             

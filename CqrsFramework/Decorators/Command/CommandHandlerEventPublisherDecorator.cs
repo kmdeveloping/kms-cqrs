@@ -5,17 +5,11 @@ using CqrsFramework.Event;
 namespace CqrsFramework.Decorators.Command;
 
 [DebuggerStepThrough]
-public class CommandHandlerEventPublisherDecorator<TCommand> : ICommandHandler<TCommand>
-    where TCommand: ICommand
+public class CommandHandlerEventPublisherDecorator<TCommand>(ICommandHandler<TCommand> decoratedHandler, IEventProcessor eventProcessor)
+    : ICommandHandler<TCommand> where TCommand : ICommand
 {
-    private readonly ICommandHandler<TCommand> _decoratedHandler;
-    private readonly IEventProcessor _eventProcessor;
-
-    public CommandHandlerEventPublisherDecorator(ICommandHandler<TCommand> decoratedHandler, IEventProcessor eventProcessor)
-    {
-        _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
-        _eventProcessor = eventProcessor ?? throw new ArgumentNullException(nameof(eventProcessor));
-    }
+    private readonly ICommandHandler<TCommand> _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
+    private readonly IEventProcessor _eventProcessor = eventProcessor ?? throw new ArgumentNullException(nameof(eventProcessor));
 
     /// <inheritdoc />
     public async Task HandleAsync(TCommand command, CancellationToken cancellationToken)

@@ -8,34 +8,30 @@ namespace CqrsFramework.Auditing;
 
 public interface IEventAuditor
 {
-    Task AuditAsync<TEvent>(TEvent @event, CancellationToken cancellationToken)
-        where TEvent : IEvent;
+    Task AuditAsync<TEvent>(TEvent @event, CancellationToken cancellationToken) where TEvent : IEvent;
 }
 
 [DebuggerStepThrough]
 public class EventAuditor : IEventAuditor
 {
-    private readonly Action<IAuditHistory> _saveAuditRecordFunc;
+    private readonly Func<IAuditHistory, Task> _saveAuditRecordFunc;
     private readonly bool _eventAuditingEnabled;
     private readonly IPrincipal _principal;
     private readonly JsonMaskedSerializerSettings _serializerSettings;
     
-    public EventAuditor(IAuditSettings auditingConfiguration, 
-        IPrincipal principal, JsonMaskedSerializerSettings serializerSettings)
+    public EventAuditor(IAuditSettings auditingConfiguration, IPrincipal principal, JsonMaskedSerializerSettings serializerSettings)
     {
-        if (auditingConfiguration == null) throw new ArgumentNullException(nameof(auditingConfiguration));
-        if (auditingConfiguration.CommandAuditingEnabled && auditingConfiguration.SaveAuditHistoryRecordAction == null)
-            throw new ArgumentNullException(nameof(auditingConfiguration.SaveAuditHistoryRecordAction), 
-                $"Command auditing is enabled, but {nameof(auditingConfiguration.SaveAuditHistoryRecordAction)} is null");
+        ArgumentNullException.ThrowIfNull(auditingConfiguration);
+        if (auditingConfiguration is { CommandAuditingEnabled: true, SaveAuditHistoryRecordAction: null }) 
+            throw new ArgumentNullException(nameof(auditingConfiguration.SaveAuditHistoryRecordAction), $"Command auditing is enabled, but {nameof(auditingConfiguration.SaveAuditHistoryRecordAction)} is null");
     
-        _principal = principal;
+        _principal = principal ?? throw new ArgumentNullException(nameof(principal));
         _serializerSettings = serializerSettings ?? throw new ArgumentNullException(nameof(serializerSettings));
-        _saveAuditRecordFunc = auditingConfiguration.SaveAuditHistoryRecordAction;
+        _saveAuditRecordFunc = auditingConfiguration.SaveAuditHistoryRecordAction!;
         _eventAuditingEnabled = auditingConfiguration.CommandAuditingEnabled;
     }
     
-    public async Task AuditAsync<TEvent>(TEvent @event, CancellationToken cancellationToken)
-        where TEvent : IEvent
+    public async Task AuditAsync<TEvent>(TEvent @event, CancellationToken cancellationToken) where TEvent : IEvent
     {
         if (_eventAuditingEnabled)
         {
@@ -54,9 +50,8 @@ public class EventAuditor : IEventAuditor
                 ExecutedOn = executedOn,
                 CreatedDt = DateTime.UtcNow
             };
-    
-            // TODO: Convert to async
-            _saveAuditRecordFunc.Invoke(commandHistory);
+            
+            await _saveAuditRecordFunc.Invoke(commandHistory);
         }
     }
 }

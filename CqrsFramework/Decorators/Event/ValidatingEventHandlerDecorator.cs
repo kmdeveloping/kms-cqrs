@@ -5,17 +5,11 @@ using CqrsFramework.Validation;
 namespace CqrsFramework.Decorators.Event;
 
 [DebuggerStepThrough]
-public class ValidatingEventHandlerDecorator<TEvent> : IEventHandler<TEvent>
+public class ValidatingEventHandlerDecorator<TEvent>(IEventHandler<TEvent> decoratedHandler, IValidator validator) : IEventHandler<TEvent>
     where TEvent : IEvent
 {
-    private readonly IEventHandler<TEvent> _decoratedHandler;
-    private readonly IValidator _validator;
-
-    public ValidatingEventHandlerDecorator(IEventHandler<TEvent> decoratedHandler, IValidator validator)
-    {
-        _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
-        _validator = validator ?? throw new ArgumentNullException(nameof(validator));
-    }
+    private readonly IEventHandler<TEvent> _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
+    private readonly IValidator _validator = validator ?? throw new ArgumentNullException(nameof(validator));
 
     public async Task HandleAsync(TEvent @event, CancellationToken cancellationToken)
     {

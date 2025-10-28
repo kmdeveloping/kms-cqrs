@@ -9,11 +9,10 @@ public sealed class ValidationResult
     {
         get
         {
-            if (_isDirty)
-            {
-                _isValid = !(Messages.Any(m => m.MessageType == ValidationMessage.ValidationMessageType.Error));
-                _isDirty = false;
-            }
+            if (!_isDirty) return _isValid;
+            
+            _isValid = !(Messages.Any(m => m.MessageType == ValidationMessage.ValidationMessageType.Error));
+            _isDirty = false;
 
             return _isValid;
         }
@@ -46,18 +45,18 @@ public sealed class ValidationResult
 
     public override string ToString()
     {
-        List<string> messages = Messages
+        var messages = Messages
             .Select(m => $"{m.MessageType} - {m.Code} - {m.Message}")
             .Distinct()
             .ToList();
-        string joinedMessages = String.Join(separator: "\r\n", values: messages);
+        var joinedMessages = string.Join(separator: "\r\n", values: messages);
             
         return $"Is valid: {IsValid}, {joinedMessages}";
     }
 
     public string GetValidationErrors()
     {
-        string errorMessage = string.Empty;
+        var errorMessage = string.Empty;
         var errors = Messages
             .Where(m => m.MessageType == ValidationMessage.ValidationMessageType.Error)
             .ToList();

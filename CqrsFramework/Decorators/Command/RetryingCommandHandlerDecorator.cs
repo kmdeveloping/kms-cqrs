@@ -11,30 +11,22 @@ namespace CqrsFramework.Decorators.Command;
 /// </summary>
 /// <typeparam name="TCommand">The type of the command.</typeparam>
 [DebuggerStepThrough]
-public class RetryingCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
-    where TCommand: ICommand, IRetryable
+public class RetryingCommandHandlerDecorator<TCommand>(ICommandHandler<TCommand> decoratedHandler, ILogger logger) : ICommandHandler<TCommand> where TCommand : ICommand, IRetryable
 {
-    private readonly ICommandHandler<TCommand> _decoratedHandler;
-    private readonly ILogger _logger;
-
-    public RetryingCommandHandlerDecorator(ICommandHandler<TCommand> decoratedHandler, ILogger logger)
-    {
-        _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
-        if(logger == null) throw new ArgumentNullException(nameof(logger));
-        _logger = logger.ForContext(typeof(RetryingCommandHandlerDecorator<TCommand>));
-    }
+    private readonly ICommandHandler<TCommand> _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
+    private readonly ILogger _logger = logger?.ForContext(typeof(RetryingCommandHandlerDecorator<TCommand>)) ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task HandleAsync(TCommand command, CancellationToken cancellationToken = default)
     {
         if (command == null) throw new ArgumentNullException(nameof(command));
 
-        string commandName = command.GetType().GetFriendlyName();
+        var commandName = command.GetType().GetFriendlyName();
             
-        PolicyBuilder policyBuilder = Policy.Handle<Exception>();
+        var policyBuilder = Policy.Handle<Exception>();
         //Policy policy = Policy.NoOp();
         AsyncPolicy policy = Policy.NoOpAsync();
 
-        if (command.RetrySettings != null && command.RetrySettings.Enabled)
+        if (command.RetrySettings is { Enabled: true })
         {
             var retryableCommand = (command as IRetryable);
             var retrySettings = retryableCommand.RetrySettings;

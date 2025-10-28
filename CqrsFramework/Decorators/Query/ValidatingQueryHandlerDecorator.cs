@@ -5,17 +5,11 @@ using CqrsFramework.Validation;
 namespace CqrsFramework.Decorators.Query;
 
 [DebuggerStepThrough]
-public class ValidatingQueryHandlerDecorator<TQuery,TResult> : IQueryHandler<TQuery,TResult>
-    where TQuery: IQuery<TResult>
+public class ValidatingQueryHandlerDecorator<TQuery, TResult>(IValidator validator, IQueryHandler<TQuery, TResult> decoratedHandler) : IQueryHandler<TQuery, TResult>
+    where TQuery : IQuery<TResult>
 {
-    private readonly IValidator _validator;
-    private readonly IQueryHandler<TQuery,TResult> _decoratedHandler;
-
-    public ValidatingQueryHandlerDecorator(IValidator validator, IQueryHandler<TQuery,TResult> decoratedHandler)
-    {
-        _validator = validator ?? throw new ArgumentNullException(nameof(validator));
-        _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
-    }
+    private readonly IValidator _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+    private readonly IQueryHandler<TQuery,TResult> _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
 
     public async Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default)
     {

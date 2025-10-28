@@ -4,17 +4,9 @@ using Serilog.Context;
 namespace CqrsFramework.Logging;
 
 [DebuggerStepThrough]
-public class SerilogAdapter<T> : ILogger<T>
+public class SerilogAdapter<T>(Serilog.ILogger serilogLogger) : ILogger<T>
 {
-    private readonly Serilog.ILogger _serilogLogger;
-
-    public SerilogAdapter(Serilog.ILogger serilogLogger)
-    {
-        if(serilogLogger == null) throw new ArgumentNullException(nameof(serilogLogger));
-
-        // ReSharper disable once ContextualLoggerProblem
-        _serilogLogger = serilogLogger.ForContext<T>();
-    }
+    private readonly Serilog.ILogger _serilogLogger = serilogLogger.ForContext<T>() ?? throw new ArgumentNullException(nameof(serilogLogger));
     
     public void Log(LogEntry entry)
     {
@@ -37,10 +29,7 @@ public class SerilogAdapter<T> : ILogger<T>
             _serilogLogger.Fatal(entry.Exception, entry.MessageTemplate, entry.PropertyValues);
     }
 
-    public IDisposable PushProperty(string name, object value, bool destructureObjects = false)
-    {
-        return LogContext.PushProperty(name, value, destructureObjects);
-    }
+    public IDisposable PushProperty(string name, object value, bool destructureObjects = false) => LogContext.PushProperty(name, value, destructureObjects);
     
     public ILogger ForContext<TContext>()
     {
@@ -63,14 +52,9 @@ public class SerilogAdapter<T> : ILogger<T>
 }
 
 [DebuggerStepThrough]
-public class SerilogAdapter : ILogger
+public class SerilogAdapter(Serilog.ILogger serilogLogger) : ILogger
 {
-    private readonly Serilog.ILogger _serilogLogger;
-
-    public SerilogAdapter(Serilog.ILogger serilogLogger)
-    {
-        _serilogLogger = serilogLogger ?? throw new ArgumentNullException(nameof(serilogLogger));
-    }
+    private readonly Serilog.ILogger _serilogLogger = serilogLogger ?? throw new ArgumentNullException(nameof(serilogLogger));
         
     public void Log(LogEntry entry)
     {
@@ -93,10 +77,7 @@ public class SerilogAdapter : ILogger
             _serilogLogger.Fatal(entry.Exception, entry.MessageTemplate, entry.PropertyValues);
     }
 
-    public IDisposable PushProperty(string name, object value, bool destructureObjects = false)
-    {
-        return LogContext.PushProperty(name, value, destructureObjects);
-    }
+    public IDisposable PushProperty(string name, object value, bool destructureObjects = false) => LogContext.PushProperty(name, value, destructureObjects);
 
     public ILogger ForContext(Type source)
     {

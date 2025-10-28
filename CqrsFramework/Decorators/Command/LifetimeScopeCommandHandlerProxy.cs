@@ -7,32 +7,20 @@ using SimpleInjector.Lifestyles;
 namespace CqrsFramework.Decorators.Command;
 
 [DebuggerStepThrough]
-public class LifetimeScopeCommandHandlerProxy<TCommand> : ICommandHandler<TCommand>
-    where TCommand : ICommand
+public class LifetimeScopeCommandHandlerProxy<TCommand>(Func<ICommandHandler<TCommand>> handlerFactory, Container container, CommandHandlerOptions commandHandlerOptions)
+    : ICommandHandler<TCommand> where TCommand : ICommand
 {
-    private readonly Func<ICommandHandler<TCommand>> _handlerFactory;
-    private readonly Container _container;
-    private readonly CommandHandlerOptions _commandHandlerOptions;
-
-    public LifetimeScopeCommandHandlerProxy(Func<ICommandHandler<TCommand>> handlerFactory, Container container,
-        CommandHandlerOptions commandHandlerOptions)
-    {
-        _handlerFactory = handlerFactory ?? throw new ArgumentNullException(nameof(handlerFactory));
-        _container = container ?? throw new ArgumentNullException(nameof(container));
-        _commandHandlerOptions =
-            commandHandlerOptions ?? throw new ArgumentNullException(nameof(commandHandlerOptions));
-    }
+    private readonly Func<ICommandHandler<TCommand>> _handlerFactory = handlerFactory ?? throw new ArgumentNullException(nameof(handlerFactory));
+    private readonly Container _container = container ?? throw new ArgumentNullException(nameof(container));
+    private readonly CommandHandlerOptions _commandHandlerOptions = commandHandlerOptions ?? throw new ArgumentNullException(nameof(commandHandlerOptions));
 
     public async Task HandleAsync(TCommand command, CancellationToken cancellationToken)
     {
         if (command == null) throw new ArgumentNullException(nameof(command));
 
-        ScopedLifestyle? defaultScopedLifestyle =
-            _container.Options.DefaultScopedLifestyle ?? new AsyncScopedLifestyle();
-        var scope = _commandHandlerOptions.ReuseExistingScope
-            ? defaultScopedLifestyle.GetCurrentScope(_container)
-            : null;
-
+        var defaultScopedLifestyle = _container.Options.DefaultScopedLifestyle ?? new AsyncScopedLifestyle();
+        
+        var scope = _commandHandlerOptions.ReuseExistingScope ? defaultScopedLifestyle.GetCurrentScope(_container) : null;
         if (scope == null)
         {
             await using (_container.CreateLifetimeScope())

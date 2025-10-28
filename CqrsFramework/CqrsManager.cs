@@ -42,46 +42,22 @@ public interface ICqrsManager
 }
 
 [DebuggerStepThrough]
-public class CqrsManager : ICqrsManager
+public class CqrsManager(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor, IEventProcessor eventProcessor, IValidationProcessor validationProcessor) : ICqrsManager
 {
-  private readonly ICommandProcessor _commandProcessor;
-  private readonly IValidationProcessor _validationProcessor;
-  private readonly IQueryProcessor _queryProcessor;
-  private readonly IEventProcessor _eventProcessor;
-  
-  public CqrsManager(
-    ICommandProcessor commandProcessor, 
-    IQueryProcessor queryProcessor, 
-    IEventProcessor eventProcessor,
-    IValidationProcessor validationProcessor)
-  {
-    _commandProcessor = commandProcessor ?? throw new ArgumentNullException(nameof(commandProcessor));
-    _queryProcessor = queryProcessor ?? throw new ArgumentNullException(nameof(queryProcessor));
-    _eventProcessor = eventProcessor ?? throw new ArgumentNullException(nameof(eventProcessor));
-    _validationProcessor = validationProcessor ?? throw new ArgumentNullException(nameof(validationProcessor));
-  }
+  private readonly ICommandProcessor _commandProcessor = commandProcessor ?? throw new ArgumentNullException(nameof(commandProcessor));
+  private readonly IValidationProcessor _validationProcessor = validationProcessor ?? throw new ArgumentNullException(nameof(validationProcessor));
+  private readonly IQueryProcessor _queryProcessor = queryProcessor ?? throw new ArgumentNullException(nameof(queryProcessor));
+  private readonly IEventProcessor _eventProcessor = eventProcessor ?? throw new ArgumentNullException(nameof(eventProcessor));
 
   /// <inheritdoc />
-  public async Task ExecuteAsync(ICommand command, CancellationToken cancellationToken = default)
-  {
-    await _commandProcessor.ProcessAsync(command, cancellationToken);
-  }
+  public async Task ExecuteAsync(ICommand command, CancellationToken cancellationToken = default) => await _commandProcessor.ProcessAsync(command, cancellationToken);
     
   /// <inheritdoc />
-  public async Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default)
-  {
-    return await _queryProcessor.ProcessAsync(query, cancellationToken);
-  }
+  public async Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default) => await _queryProcessor.ProcessAsync(query, cancellationToken);
     
   /// <inheritdoc />
-  public async Task PublishEventAsync(IEvent @event, CancellationToken cancellationToken = default)
-  {
-    await _eventProcessor.ProcessAsync(@event, cancellationToken);
-  }
+  public async Task PublishEventAsync(IEvent @event, CancellationToken cancellationToken = default) => await _eventProcessor.ProcessAsync(@event, cancellationToken);
     
   /// <inheritdoc />
-  public async Task<ValidationResult> ValidateAsync<T>(T obj, CancellationToken cancellationToken = default)
-  {
-    return await _validationProcessor.ProcessValidationAsync(obj, cancellationToken);
-  }
+  public async Task<ValidationResult> ValidateAsync<T>(T obj, CancellationToken cancellationToken = default) => await _validationProcessor.ProcessValidationAsync(obj, cancellationToken);
 }

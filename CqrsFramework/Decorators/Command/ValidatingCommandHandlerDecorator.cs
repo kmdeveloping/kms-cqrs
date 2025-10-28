@@ -5,17 +5,11 @@ using CqrsFramework.Validation;
 namespace CqrsFramework.Decorators.Command;
 
 [DebuggerStepThrough]
-public class ValidatingCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
-    where TCommand: ICommand
+public class ValidatingCommandHandlerDecorator<TCommand>(IValidator validator, ICommandHandler<TCommand> decoratedHandler) : ICommandHandler<TCommand>
+    where TCommand : ICommand
 {
-    private readonly IValidator _validator;
-    private readonly ICommandHandler<TCommand> _decoratedHandler;
-
-    public ValidatingCommandHandlerDecorator(IValidator validator, ICommandHandler<TCommand> decoratedHandler)
-    {
-        _validator = validator ?? throw new ArgumentNullException(nameof(validator));
-        _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
-    }
+    private readonly IValidator _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+    private readonly ICommandHandler<TCommand> _decoratedHandler = decoratedHandler ?? throw new ArgumentNullException(nameof(decoratedHandler));
 
     public async Task HandleAsync(TCommand command, CancellationToken cancellationToken)
     {

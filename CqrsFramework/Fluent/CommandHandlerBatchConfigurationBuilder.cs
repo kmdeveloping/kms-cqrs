@@ -11,6 +11,7 @@ public class CommandHandlerBatchConfigurationBuilder
     private readonly Container _container;
     private readonly IList<Assembly> _assemblies;
     private readonly CqrsConfigurationBuilder _parentBuilder;
+    
     public CommandHandlerBatchConfigurationBuilder(CqrsConfigurationBuilder parentBuilder, Container container, IList<Assembly> assemblies)
     {
         _container = container ?? throw new ArgumentNullException(nameof(container));
@@ -20,10 +21,7 @@ public class CommandHandlerBatchConfigurationBuilder
         RegisterHandlers();
     }
 
-    private void RegisterHandlers()
-    {
-        _container.Register(typeof(ICommandHandler<>), _assemblies);
-    }
+    private void RegisterHandlers() => _container.Register(typeof(ICommandHandler<>), _assemblies);
 
     public CommandHandlerBatchConfigurationBuilder DecorateWith(Type decoratorType)
     {
@@ -39,7 +37,7 @@ public class CommandHandlerBatchConfigurationBuilder
 
     public CommandHandlerBatchConfigurationBuilder DecorateWith(Type decoratorType, Predicate<DecoratorPredicateContext> predicate)
     {
-        this.DecorateWith(decoratorType, Lifestyle.Transient, predicate);
+        DecorateWith(decoratorType, Lifestyle.Transient, predicate);
         return this;
     }
 
@@ -50,45 +48,24 @@ public class CommandHandlerBatchConfigurationBuilder
     }
 
 
-    public CommandHandlerBatchConfigurationBuilder WithTransactionConfiguration<TSettings>(
-        ICommandTransactionSettings settings)
-        where TSettings : ICommandTransactionSettings
+    public CommandHandlerBatchConfigurationBuilder WithTransactionConfiguration<TSettings>(ICommandTransactionSettings settings) where TSettings : ICommandTransactionSettings
     {
         _container.RegisterInstance(settings);
         return this;
     }
 
-    public CommandHandlerBatchConfigurationBuilder WithTransactionConfiguration<TSettings>(
-        Func<ICommandTransactionSettings> getSettings)
-        where TSettings: ICommandTransactionSettings
-    {
-        return this.WithTransactionConfiguration<TSettings>(getSettings());
-    }
+    public CommandHandlerBatchConfigurationBuilder WithTransactionConfiguration<TSettings>(Func<ICommandTransactionSettings> getSettings) where TSettings: ICommandTransactionSettings => WithTransactionConfiguration<TSettings>(getSettings());
 
-    public CommandHandlerBatchConfigurationBuilder WithAuditingConfiguration<TSettings,TAuditHistory>(
-        IAuditSettings settings)
-        where TSettings : IAuditSettings
-        where TAuditHistory : IAuditHistory, new()
+    public CommandHandlerBatchConfigurationBuilder WithAuditingConfiguration<TSettings,TAuditHistory>(IAuditSettings settings) where TSettings : IAuditSettings where TAuditHistory : IAuditHistory, new()
     {
         _container.RegisterInstance(settings);
         return this;
     }
 
-    public CommandHandlerBatchConfigurationBuilder WithAuditingConfiguration<TSettings,TAuditHistory>(
-        Func<IAuditSettings> getSettings)
-            where TSettings : IAuditSettings
-            where TAuditHistory : IAuditHistory, new()
-    {
-        return WithAuditingConfiguration<TSettings,TAuditHistory>(getSettings());
-    }
+    public CommandHandlerBatchConfigurationBuilder WithAuditingConfiguration<TSettings,TAuditHistory>(Func<IAuditSettings> getSettings) where TSettings
+        : IAuditSettings where TAuditHistory : IAuditHistory, new() => WithAuditingConfiguration<TSettings,TAuditHistory>(getSettings());
 
-    public CommandHandlerBatchConfigurationBuilder WithRateLimitingConfiguration(Func<RateLimiterConstraints> getSettings)
-    {
-        if (getSettings != null)
-            return WithRateLimitingConfiguration(getSettings());
-        else
-            return this;
-    }
+    public CommandHandlerBatchConfigurationBuilder WithRateLimitingConfiguration(Func<RateLimiterConstraints> getSettings) => getSettings != null ? WithRateLimitingConfiguration(getSettings()) : this;
         
     public CommandHandlerBatchConfigurationBuilder WithRateLimitingConfiguration(RateLimiterConstraints constraints)
     {
@@ -98,8 +75,5 @@ public class CommandHandlerBatchConfigurationBuilder
         return this;
     }
 
-    public CqrsConfigurationBuilder And()
-    {
-        return _parentBuilder;
-    }
+    public CqrsConfigurationBuilder And() => _parentBuilder;
 }
